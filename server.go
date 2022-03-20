@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 	"regexp"
 	"sync"
 )
@@ -89,6 +90,7 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	port := os.Getenv("PORT")
 	h1 := holiday_2021()
 	h2 := holiday_2022()
 	h3 := holiday_2023()
@@ -108,5 +110,5 @@ func main() {
 	mux.Handle("/holiday", dHandler)
 	mux.Handle("/holiday/", dHandler)
 
-	http.ListenAndServe("localhost:8080", mux)
+	http.ListenAndServe(":"+port, mux)
 }
