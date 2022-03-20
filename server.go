@@ -55,7 +55,8 @@ func (h *dateHandler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	if err = w.Write(jsonBytes); err != nil {
+	_, err = w.Write(jsonBytes)
+	if err != nil {
 		log.Fatal(err)
 		return
 	}
@@ -71,7 +72,8 @@ func (h *dateHandler) Get(w http.ResponseWriter, r *http.Request) {
 	y, ok := h.store.m[matches[1]]
 	if !ok {
 		w.WriteHeader(http.StatusNotFound)
-		if err := w.Write([]byte("year not found")); err != nil {
+		_, err := w.Write([]byte("year not found"))
+		if err != nil {
 			log.Fatal(err)
 			return
 		}
@@ -82,7 +84,8 @@ func (h *dateHandler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	if err = w.Write(jsonBytes); err != nil {
+	_, err = w.Write(jsonBytes)
+	if err != nil {
 		log.Fatal(err)
 		return
 	}
@@ -90,14 +93,16 @@ func (h *dateHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 func internalServerError(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusInternalServerError)
-	if err := w.Write([]byte("internal server error")); err != nil {
+	_, err := w.Write([]byte("internal server error"))
+	if err != nil {
 		log.Fatal(err)
 	}
 }
 
 func notFound(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
-	if err := w.Write([]byte("not found")); err != nil {
+	_, err := w.Write([]byte("not found"))
+	if err != nil {
 		log.Fatal(err)
 	}
 }
