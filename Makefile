@@ -7,5 +7,8 @@ YEAR2023=holiday_2023.go
 holidayapi:
 	$(MAKE) $(SERVER) $(YEAR2021) $(YEAR2022) $(YEAR2023)
 
+test:
+	go test
+
 clean:
 	rm -rf holidayapi
