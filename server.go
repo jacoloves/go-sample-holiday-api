@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 	"regexp"
@@ -54,7 +55,11 @@ func (h *dateHandler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonBytes)
+	_, err = w.Write(jsonBytes)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 }
 
 func (h *dateHandler) Get(w http.ResponseWriter, r *http.Request) {
@@ -67,8 +72,11 @@ func (h *dateHandler) Get(w http.ResponseWriter, r *http.Request) {
 	y, ok := h.store.m[matches[1]]
 	if !ok {
 		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("year not found"))
-		return
+		_, err := w.Write([]byte("year not found"))
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
 	}
 	jsonBytes, err := json.MarshalIndent(y, " ", " ")
 	if err != nil {
@@ -76,17 +84,27 @@ func (h *dateHandler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonBytes)
+	_, err = w.Write(jsonBytes)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 }
 
 func internalServerError(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusInternalServerError)
-	w.Write([]byte("internal server error"))
+	_, err := w.Write([]byte("internal server error"))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func notFound(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
-	w.Write([]byte("not found"))
+	_, err := w.Write([]byte("not found"))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
@@ -110,5 +128,7 @@ func main() {
 	mux.Handle("/holiday", dHandler)
 	mux.Handle("/holiday/", dHandler)
 
-	http.ListenAndServe(":"+port, mux)
+	if err := http.ListenAndServe(":"+port, mux); err != nil {
+		log.Fatal(err)
+	}
 }
